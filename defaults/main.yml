@@ -1,2 +1,22 @@
 ---
-# defaults file for galaxy_spotify
+# for Debian/Ubuntu use the flow specified here: https://www.spotify.com/de/download/linux/
+- name: Set up the key for the Spotify repository (Debian)...
+  become: yes
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: 931FF8E79F0876134EDDBDCCA87FF9DF48BF1C90
+  when: ansible_os_family == 'Debian'
+
+- name: Ensure the spotify repository is configured (Debian)...
+  become: yes
+  apt_repository:
+    repo: "deb http://repository.spotify.com stable non-free"
+    state: present
+  when: ansible_os_family == 'Debian'
+
+- name: Install spotify and related components (Debian)...
+  become: yes
+  apt: name={{ item }} state=latest
+  with_items:
+    - spotify-client
+  when: ansible_os_family == 'Debian'
